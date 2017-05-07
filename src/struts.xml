@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<!-- 指定Struts 2配置文件的根元素 -->
+<struts>
+	<!--指定全局国际化资源文件 -->
+	<constant name="struts.custom.il8n,resources" value="mess"></constant>
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+	<constant name="struts.devMode" value="true" />
+	<!-- 所有的Action 定义都应该放在package下 -->
+	<package name="lee" namespace="/" extends="struts-default">
+		<interceptors>
+			<interceptor name="authority" class="interceptor.AuthorityInterceptor" />
+			<interceptor-stack name="myDefault">
+				<interceptor-ref name="defaultStack" />
+				<interceptor-ref name="authority" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="myDefault" />
+		<global-results>
+			<result name="login">/WEB-INF/content/Login.jsp</result>
+		</global-results>
+		<action name="myLoginAction" class="action.MyLoginAction">
+			<interceptor-ref name="defaultStack" />
+			<result type="chain">getAllGoods</result>
+			<result name="input">/WEB-INF/content/Login.jsp</result>
+		</action>
+		<action name="getAllGoods" class="action.GoodsAction" method="findAllGoods">
+			<result>/WEB-INF/content/goodslist.jsp</result>
+			<!-- <interceptor-ref name="defaultStack"/> -->
+			<!-- <interceptor-ref name="authority"/> -->
+		</action>
+
+		<action name="addToCart" class="action.CartAction" method="addToCart">
+			<result>/WEB-INF/content/cart.jsp</result>
+		</action>
+		<action name="clearCart" class="action.CartAction" method="clearCart">
+			<result>/WEB-INF/content/cart.jsp</result>
+		</action>
+		<action name="modifyGoods" class="action.CartAction" method="modifyGoods">
+			<result>/WEB-INF/content/cart.jsp</result>
+		</action>
+		<action name="deleteGoods" class="action.CartAction" method="deleteGoods">
+			<result>/WEB-INF/content/cart.jsp</result>
+		</action>
+		<action name="*">
+			<result name="success">/WEB-INF/content/{1}.jsp</result>
+		</action>
+
+	</package>
+</struts>
