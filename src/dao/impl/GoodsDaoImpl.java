@@ -45,51 +45,52 @@ public class GoodsDaoImpl implements GoodsDao {
 	public ArrayList getGoodsByPage(int pageNo) {
 		// TODO Auto-generated method stub
 		init();
-
 		ArrayList rst = new ArrayList();
-
-		String sql = "select * from goods";
-//		rst = (ArrayList)jdbcTemplate.queryForList(sql, new Object[]{pageNo*numPerPage,numPerPage},new GoodsForMapper());
-		DBBean db = new DBBean();
-		Connection con = db.getConnection();
-		ResultSet rs = null;
-
-		try {
-			rs = db.executeQuery(sql, null);
-
-			if (rs != null) {
-				int index = 1;
-				int beginIndex = (pageNo - 1) * numPerPage + 1;
-				int endIndex = pageNo * numPerPage;
-				// 这里不需要判断endIndex是否超出了结果数量，如果endIndex超出时rs.next就跳出循环了
-				while (rs.next()) {
-					if (index < beginIndex) {
-						index++;
-						continue;
-					}
-
-					if (index > endIndex) {
-						break;
-					}
-
-					String goodsId = rs.getString(1);
-					String goodsName = rs.getString(2);
-					Float price = rs.getFloat(3);
-
-					GoodsVo g = new GoodsVo();
-					g.setGoodsId(goodsId);
-					g.setGoodsName(goodsName);
-					g.setPrice(price);
-
-					rst.add(g);
-					index++;
-				}
-			}
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//sql语句中不支持运算符，如limit a*b,b;所以要先定义
+		int cnt = numPerPage*(pageNo-1);
+		String sql = "select * from goods limit ?,?";
+		rst = (ArrayList) jdbcTemplate.queryForList(sql, new Object[]{cnt,numPerPage});
+//		String sql = "select * from goods";
+//		DBBean db = new DBBean();
+//		Connection con = db.getConnection();
+//		ResultSet rs = null;
+//
+//		try {
+//			rs = db.executeQuery(sql, null);
+//
+//			if (rs != null) {
+//				int index = 1;
+//				int beginIndex = (pageNo - 1) * numPerPage + 1;
+//				int endIndex = pageNo * numPerPage;
+//				// 这里不需要判断endIndex是否超出了结果数量，如果endIndex超出时rs.next就跳出循环了
+//				while (rs.next()) {
+//					if (index < beginIndex) {
+//						index++;
+//						continue;
+//					}
+//
+//					if (index > endIndex) {
+//						break;
+//					}
+//
+//					String goodsId = rs.getString(1);
+//					String goodsName = rs.getString(2);
+//					Float price = rs.getFloat(3);
+//
+//					GoodsVo g = new GoodsVo();
+//					g.setGoodsId(goodsId);
+//					g.setGoodsName(goodsName);
+//					g.setPrice(price);
+//
+//					rst.add(g);
+//					index++;
+//				}
+//			}
+//
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		return rst;
 	}
 
